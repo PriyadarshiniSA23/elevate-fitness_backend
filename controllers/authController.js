@@ -5,10 +5,10 @@ const generateToken = require('../utils/generateToken');
 // @route   POST /api/auth/register
 const register = async (req, res) => {
     try {
-        const { name, email, phone, password } = req.body;
+        const { full_name, email, phone_number, password } = req.body;
 
-        if (!name || !email || !phone || !password) {
-            return res.status(400).json({ success: false, message: 'Please provide all required fields (name, email, phone, password)' });
+        if (!full_name || !email || !phone_number || !password) {
+            return res.status(400).json({ success: false, message: 'Please provide all required fields (full_name, email, phone_number, password)' });
         }
 
         const existingEmail = await authService.getUserByEmail(email);
@@ -16,7 +16,7 @@ const register = async (req, res) => {
             return res.status(409).json({ success: false, message: 'Email already exists' });
         }
 
-        const existingPhone = await authService.getUserByPhone(phone);
+        const existingPhone = await authService.getUserByPhone(phone_number);
         if (existingPhone) {
             return res.status(409).json({ success: false, message: 'Phone number already exists' });
         }
@@ -28,9 +28,9 @@ const register = async (req, res) => {
 
         const userId = await authService.createUser({
             member_id,
-            full_name: name,
+            full_name,
             email,
-            phone_number: phone,
+            phone_number,
             password: hashedPassword,
             role: 'user'
         });
@@ -41,9 +41,9 @@ const register = async (req, res) => {
             user: {
                 id: userId,
                 member_id,
-                name,
+                full_name,
                 email,
-                phone,
+                phone_number,
                 role: 'user'
             }
         });
@@ -84,9 +84,9 @@ const login = async (req, res) => {
             user: {
                 id: user.id,
                 member_id: user.member_id,
-                name: user.full_name,
+                full_name: user.full_name,
                 email: user.email,
-                phone: user.phone_number,
+                phone_number: user.phone_number,
                 role: user.role,
                 profile_image: user.profile_image
             }
@@ -113,9 +113,9 @@ const getProfile = async (req, res) => {
             success: true,
             user: {
                 member_id: user.member_id,
-                name: user.full_name,
+                full_name: user.full_name,
                 email: user.email,
-                phone: user.phone_number,
+                phone_number: user.phone_number,
                 role: user.role,
                 profile_image: user.profile_image,
                 membership_status: membershipStatus || null

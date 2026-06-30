@@ -5,8 +5,8 @@ const getUserByEmail = async (email) => {
     return rows[0];
 };
 
-const getUserByPhone = async (phone) => {
-    const [rows] = await pool.query('SELECT * FROM users WHERE phone_number = ?', [phone]);
+const getUserByPhone = async (phone_number) => {
+    const [rows] = await pool.query('SELECT * FROM users WHERE phone_number = ?', [phone_number]);
     return rows[0];
 };
 
